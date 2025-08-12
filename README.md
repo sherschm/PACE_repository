@@ -7,18 +7,19 @@
 
 ## Setup Instructions
 
-1. **Clone the repository and make a Python virtual environment**
+1. **OPen a command prompt and clone the repository. Then, make a Python virtual environment**
     ```bash
     git clone https://git.ccfe.ac.uk/pace-training-material/modeling-and-control-notebooks.git
     cd modeling-and-control-notebooks
-    python3 -m venv venv 
+    python -m venv venv 
     ```
 
 2. **Activate virtual environment and import the required python packages**
 - **Windows**
+In a command prompt run:
 
 ```shell
-\Scripts\Activate.ps1
+venv\Scripts\activate.bat
 ```
 
 - **Linux**

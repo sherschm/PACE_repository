@@ -1,7 +1,10 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+from cart_plotting import make_animation_with_force
+import os
+file_directory = os.path.dirname(os.path.abspath(__file__))
+
 
 # --- System Parameters ---
 m = 10  # kg
@@ -45,30 +48,6 @@ plt.plot(t, xdot, label="dx/dt (m/s)")
 plt.xlabel("time (s)")
 plt.legend()
 plt.grid(True)
-plt.savefig("x_and_v_plot.png", dpi=150)
+plt.savefig("response_plot.png", dpi=150)
 
-# --- Animation ---
-fig, ax = plt.subplots()
-ax.set_xlim(min(x)-1, max(x)+1)
-ax.set_ylim(-1, 1)
-cart, = ax.plot([], [], 'ks', markersize=20)  # cart as a square
-force_arrow = ax.arrow(0, 0, 0, 0, head_width=0.2, color='red')
-time_text = ax.text(0.02, 0.9, '', transform=ax.transAxes)
-
-def init():
-    cart.set_data([], [])
-    return cart, force_arrow, time_text
-
-def update(frame):
-    cart.set_data(x[frame], 0)
-    ax.patches.clear()
-    arrow_len = F_vec[frame] / 100.0
-    ax.add_patch(plt.Arrow(x[frame], 0, arrow_len, 0, width=0.2, color='red'))
-    time_text.set_text(f"t = {t[frame]:.2f} s")
-    return cart, force_arrow, time_text
-
-ani = FuncAnimation(fig, update, frames=len(t), init_func=init,
-                    interval=25, blit=False)
-
-ani.save("trolley_PD.gif", writer="pillow", fps=30)
-plt.close()
+make_animation_with_force(x_sol=x, F_sol=F_vec, t_vec=t, file_name=str(file_directory)+"/Cart_simulation.gif")
