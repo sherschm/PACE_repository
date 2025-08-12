@@ -1,0 +1,41 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+from cart_plotting import make_animation_with_force
+file_directory = os.path.dirname(os.path.abspath(__file__))
+
+#System parameters
+m = 10  # kg
+F = 1 #Newton
+
+#Simulation parameters
+t_step = 0.05 #seconds 
+t_final = 10.0 #seconds 
+t = np.arange(0.0,t_final,t_step)
+n = t.shape[0]
+
+#Initial conditions
+y0 = 0.0
+yd0 = 0.0
+
+#Analytical simulation solution
+x = (F/(2*m))*t**2 + yd0*t + y0
+
+# --- Plot results ---
+plt.figure()
+plt.plot(list(t), list(x))
+plt.xlabel("time (s)")
+plt.ylabel("x (m)")
+plt.legend()
+plt.grid(True)
+plt.savefig(str(file_directory)+"/response_plot.png", dpi=150)
+
+plt.figure()
+plt.plot([0.0,t_final], [F,F])
+plt.xlabel("time (s)")
+plt.ylabel("Force (N)")
+plt.grid(True)
+plt.savefig(str(file_directory)+"/force_plot.png", dpi=150)
+
+# --- Generate visualisation of the cart simulation! ---
+make_animation_with_force(x_sol=list(x), F_sol=[F]*n, t_vec=list(t), file_name=str(file_directory)+"/Cart_simulation.gif")

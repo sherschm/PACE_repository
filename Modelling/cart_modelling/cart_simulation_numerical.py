@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import cos, sin
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 from cart_plotting import make_animation_with_force
@@ -14,7 +15,7 @@ B = np.array([[0],
 
 # Define control input
 def u(t,x):
-    force = 15*np.sin(1.2*t) #Newton
+    force = 15*cos(1.2*t)
     return np.array([force])
 
 # Dynamics function
@@ -23,7 +24,7 @@ def xdot(t, x):
     return dx.flatten()
 
 # Initial conditions & simulation parameters
-t_span = (0, 10)   # time range
+t_span = (0, 10)   # time range (0-> 10 seconds)
 x0 = np.array([0.0, 0.0])    # initial state: [x, xdot]
 
 # Solve the ODE

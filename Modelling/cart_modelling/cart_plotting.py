@@ -112,11 +112,12 @@ def make_animation_with_force(x_sol, F_sol, t_vec, file_name):
                         color='black', linewidth=1)
 
         # Draw force arrow
-        arrow_len = F_anim[i] / 10.0
-        ax.add_patch(FancyArrow(x_anim[i, 0], 0.5*h_trol + 2*r_wheel,
-                                arrow_len, 0, width=0.05,
-                                head_width=0.15, head_length=0.15,
-                                color='red'))
+        if F_anim[i] >=0.001:
+            arrow_len = F_anim[i] / 10.0
+            ax.add_patch(FancyArrow(x_anim[i, 0], 0.5*h_trol + 2*r_wheel,
+                                    arrow_len, 0, width=0.05,
+                                    head_width=0.15, head_length=0.15,
+                                    color='red'))
 
         # Label the x-axis
         ax.set_xlabel("Position (m)")
