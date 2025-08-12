@@ -16,10 +16,25 @@
 
 2. **Activate virtual environment and import the required python packages**
 - **Windows**
-```bash
-    venv\Scripts\Activate.ps1
+
+```shell
+\Scripts\Activate.ps1
 ```
+
 - **Linux**
-```bash
-    source venv/bin/activate
+
+```shell
+source venv/bin/activate
+```
+
+3. **Install dependencies**
+```shell
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+If requirements.txt doesn’t exist yet, you can generate it after installing dependencies:
+
+```shell
+pip freeze > requirements.txt
 ```
