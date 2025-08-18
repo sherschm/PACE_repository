@@ -1,35 +1,59 @@
-# Python Tutorial: Deriving F=ma Using the Euler-Lagrange Equation with SymPy
+from sympy import symbols, Function, diff, Eq, simplify, pprint
 
-from sympy import symbols, Function, diff, Eq, simplify
+# -----------------------------
+# Step 1: Define symbols
+# -----------------------------
+print("Step 1: Defining variables...")
+t = symbols('t')  # time
+m, u = symbols('m u')  # mass and applied force
+y = Function('y')(t)  # position as a function of time
+print("Time variable:")
+pprint(t)
+print("Mass and Applied Force:")
+pprint((m, u))
+print("Position:")
+pprint(y)
+print("\n")
 
-# Define symbols
-t = symbols('t')
-m, F = symbols('m F')
-x = Function('x')(t)
+# -----------------------------
+# Step 2: Define kinetic energy only (no potential energy)
+# -----------------------------
+print("Step 2: Defining kinetic energy...")
+T = (1/2) * m * diff(y, t)**2  # kinetic energy
+print("Kinetic Energy T =")
+pprint(T)
+print("\n")
 
-# Kinetic energy: T = (1/2) m v^2
-T = (1/2) * m * diff(x, t)**2
+# -----------------------------
+# Step 3: Construct the Lagrangian
+# -----------------------------
+print("Step 3: Constructing the Lagrangian (no potential energy)...")
+L = T
+print("Lagrangian L =")
+pprint(L)
+print("\n")
 
-# Potential energy: V = -F x
-V = -F * x
+# -----------------------------
+# Step 4: Apply Lagrange-d'Alembert Equation with Q term
+# -----------------------------
+print("Step 4: Applying Lagrange-d'Alembert equation with generalized force Q...")
+y_dot = diff(y, t)
+dL_dy = diff(L, y)               # ∂L/∂y
+dL_dy_dot = diff(L, y_dot)       # ∂L/∂y_dot
+d_dt_dL_dy_dot = diff(dL_dy_dot, t)  # d/dt(∂L/∂y_dot)
 
-# Lagrangian: L = T - V
-L = T - V
+Q = u  # generalized force
+EL_eq = Eq(d_dt_dL_dy_dot - dL_dy, Q)
+print("Lagrange-d'Alembert equation:")
+pprint(EL_eq)
+print("\n")
 
-# Euler-Lagrange equation: d/dt(∂L/∂x_dot) - ∂L/∂x = 0
-x_dot = diff(x, t)
-dL_dx = diff(L, x)
-dL_dx_dot = diff(L, x_dot)
-d_dt_dL_dx_dot = diff(dL_dx_dot, t)
-
-# Euler-Lagrange equation
-EL_eq = Eq(d_dt_dL_dx_dot - dL_dx, 0)
-print("Euler-Lagrange equation:")
-print(EL_eq)
-
-# Simplify to get F = m a
-# Substitute x'' for acceleration
-a = diff(x, t, t)
-EL_eq_simplified = simplify(EL_eq.subs(diff(x, t, t), a))
-print("\nSimplified equation (F = m a):")
-print(EL_eq_simplified)
+# -----------------------------
+# Step 5: Simplify to Newton's Law
+# -----------------------------
+print("Step 5: Simplifying equation to F = m a...")
+a = diff(y, t, t)  # acceleration
+EL_eq_simplified = simplify(EL_eq.subs(diff(y, t, t), a))
+print("Final simplified equation:")
+pprint(EL_eq_simplified)
+print("This is Newton's second law derived using Lagrange-d'Alembert with a generalized force.")
