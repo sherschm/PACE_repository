@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
-from cart_plotting import make_animation_with_force
+from Modelling.cart_modelling.cartPlotting import make_animation_with_force
 import os
 file_directory = os.path.dirname(os.path.abspath(__file__))
 

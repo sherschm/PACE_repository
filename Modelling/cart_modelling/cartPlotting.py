@@ -41,7 +41,7 @@ def lin_interp(dataset, tvec, tvec_new):
         out[:, i] = np.interp(tvec_new, tvec, dataset[:, i])
     return out
 
-def make_animation_with_force(x_sol, F_sol, t_vec, file_name):
+def animate_cart(x_sol, F_sol, t_vec, file_name):
     """
     Make an animation of trolleys with a force arrow on the first one.
     x_sol: (n_time, n_trolleys)
