@@ -11,12 +11,12 @@ F = 1 #Newton
 #Simulation parameters
 t_step = 0.05 #seconds 
 t_final = 10.0 #seconds 
-t = np.arange(0.0,t_final,t_step)
-n = t.shape[0]
+t = np.arange(0.0,t_final,t_step) #define a series of time steps
+n = t.shape[0] #number of time steps in simulation
 
 #Initial conditions
-y0 = 0.0
-yd0 = 0.0
+y0 = 0.0 #initial position
+yd0 = 0.0 #initial velocity
 
 #Analytical simulation solution
 y= (F/(2*m))*t**2 + yd0*t + y0

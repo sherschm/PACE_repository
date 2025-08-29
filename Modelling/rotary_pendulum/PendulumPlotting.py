@@ -3,7 +3,7 @@ from matplotlib.animation import FuncAnimation
 from scipy.interpolate import interp1d
 from KinematicsFuncs import calc_R20, Rz
 import matplotlib.pyplot as plt
-from parameters import l1, l2
+from PendulumParameters import l1, l2
 
 def L1_tip_pos(theta1):
     return Rz(theta1).T @ np.array([0, l1, 0])
@@ -39,8 +39,11 @@ def rot_pendulum_animator(x_sol, name="rotary_pendulum_anim"):
     tvec = x_sol.t
     anim_fps = 20
     tvec_anim = np.arange(1/anim_fps, tvec[-1], 1/anim_fps)
-    x_anim = x_sol.y
+    np.arange(1/anim_fps, tvec[-1], 1/anim_fps)
     #x_anim = general_lin_interp(x_sol, tvec, tvec_anim)
+
+    # resample state trajectory at animation fps using cubic interpolation
+    x_anim = interp1d(tvec, x_sol.y, kind='cubic', axis=1)(tvec_anim)
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
