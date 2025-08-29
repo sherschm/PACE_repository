@@ -43,10 +43,6 @@ omega = Matrix([
     Omega[1, 0]
 ])
 
-# Ip can be scalar symbol or 3x3 matrix; make it 3x3 if needed
-if isinstance(Ip, sp.Symbol):
-    Ip = sp.eye(3) * Ip
-
 T_rot = (sp.Rational(1, 2)) * (omega.T * Ip * omega)[0]
 v_com = R20_dot.T * Matrix(rc)
 T_lin = (sp.Rational(1, 2)) * m * (v_com.T * v_com)[0]
@@ -138,8 +134,7 @@ def xdot(t, x):
 # ---------------------------------------------------------------------
 t_span = (0.0, 10.0)
 t_eval = np.linspace(t_span[0], t_span[1], 400)
-#x0 = np.array([0.0, np.pi, 0.0, 0.0], dtype=float)
-x0 = np.array([0.0, 0.1, 0.0, 0.0], dtype=float)
+x0 = np.array([0.0, np.pi-0.1, 0.0, 0.0], dtype=float)
 
 sol = solve_ivp(xdot, t_span, x0, t_eval=t_eval, method="RK45", atol=1e-9, rtol=1e-7)
 

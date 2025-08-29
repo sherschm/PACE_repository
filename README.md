@@ -33,9 +33,3 @@ source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
-
-If requirements.txt doesn’t exist yet, you can generate it after installing dependencies:
-
-```shell
-pip freeze > requirements.txt
-```
