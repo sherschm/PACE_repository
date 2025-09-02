@@ -55,3 +55,32 @@ def rot_pendulum_animator(x_sol, name="rotary_pendulum_anim"):
     anim = FuncAnimation(fig, update, frames=len(tvec_anim), interval=1000/anim_fps)
     anim.save(f"{name}.gif", writer='pillow', fps=anim_fps)
     plt.close(fig)
+
+    
+def plot_response(sol, file_directory, filename="response_plot.png"): 
+
+    t= list(sol.t)
+
+    fig, axs = plt.subplots(2, figsize=(8, 6), sharex=True, constrained_layout=True)
+
+    # First subplot: Cart response
+    axs[0].plot(t, list(sol.y[0]) , label="Theta 1")
+    axs[0].plot(t, list(sol.y[1]), label="Theta 2")
+    axs[0].set_ylabel("Response (radians)")
+    axs[0].set_title("Pendulum Response")
+    axs[0].grid(True)
+    axs[0].legend(loc="best")
+
+    # Second subplot: Control input
+    axs[1].plot(t, F, label="Force u (N)", color="red")
+    axs[1].set_xlabel("Time (s)")
+    axs[1].set_ylabel("Force (N)")
+    axs[1].set_title("Control Input")
+    axs[1].grid(True)
+    axs[1].legend(loc="best")
+
+    # Save & show
+    save_path = str(file_directory) + "/" + filename
+    plt.savefig(save_path, dpi=150)
+    #plt.show()
+    print(f"Plot saved to {save_path}")

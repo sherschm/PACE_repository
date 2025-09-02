@@ -1,12 +1,13 @@
 import sympy as sp
 import numpy as np
 from sympy import Matrix, Function, symbols, simplify
-from KinematicsFuncs import calc_R20
-from PendulumPlotting import rot_pendulum_animator
 from PendulumParameters import rc, m, Ip, g, damping
 from scipy.integrate import solve_ivp
 import os
 from matplotlib import pyplot as plt
+from KinematicsFuncs import calc_R20
+from PendulumPlotting import rot_pendulum_animator
+from DynamicsFuncs import finite_diff_jacobian, rot_pend_dynamics_num, f_wrapped
 
 file_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -85,97 +86,15 @@ M_f = sp.lambdify(x_syms, M.tolist(), modules="numpy")
 N_f = sp.lambdify(x_syms, N.tolist(), modules="numpy")
 
 # ---------------------------------------------------------------------
-# 2) Numerical dynamics (NumPy only)
+# 4) Linearization model
 # ---------------------------------------------------------------------
-def dynamics_acc_ctrl_terms(x):
-    """
-    Modified dynamics with acceleration as control input.
-    x = [θ1, θ2, θ1d, θ2d]
-    Returns: M_acc (2x2), N_acc (2,), B_acc (2,1)
-    """
-    A = np.array([[1.0, 0.0]])  # constraint matrix
-    M = np.array(M_f(x[0], x[1], x[2], x[3]), dtype=float)
-    N = np.array(N_f(x[0], x[1], x[2], x[3]), dtype=float).flatten()
-
-    D_mat = np.array([[0.0, 0.0],
-                      [0.0, damping]], dtype=float)
-    Damping_force = (D_mat @ np.asarray(x)[2:]).flatten()
-
-    M_inv = np.linalg.inv(M)
-    AMinvAT_inv = np.linalg.inv(A @ M_inv @ A.T)  # scalar (1x1)
-
-    N_bar = N + Damping_force
-    proj = A.T @ AMinvAT_inv @ A @ M_inv   # 2x2
-    N_acc = N_bar - proj @ N_bar           # 2,
-    B_acc = A.T @ AMinvAT_inv              # 2x1
-    M_acc = M
-
-    return M_acc, N_acc, B_acc
-
-def rot_pend_dynamics_num(x, u):
-    """
-    First-order ODE: xdot = [θ1d, θ2d, θ1dd, θ2dd]
-    """
-    M_a, N_a, B_a = dynamics_acc_ctrl_terms(x)
-    acc = np.linalg.inv(M_a) @ (B_a.flatten() * u - N_a)  # (2,)
-    return np.array([x[2], x[3], acc[0], acc[1]], dtype=float)
-
-def f_wrapped(xu):
-    x = xu[:4]
-    u = xu[4]
-    return rot_pend_dynamics_num(x, u)
-
-def xdot(t, x):
-    u = 0.0
-    return rot_pend_dynamics_num(x, u)
-
-# ---------------------------------------------------------------------
-# 3) Simulate with SciPy
-# ---------------------------------------------------------------------
-t_span = (0.0, 10.0)
-t_eval = np.linspace(t_span[0], t_span[1], 400)
-x0 = np.array([0.0, np.pi-0.1, 0.0, 0.0], dtype=float)
-
-sol = solve_ivp(xdot, t_span, x0, t_eval=t_eval, method="RK45", atol=1e-9, rtol=1e-7)
-
-# --- Plot results ---
-plt.figure()
-plt.plot(list(sol.t), list(sol.y[1]))
-plt.xlabel("time (s)")
-plt.ylabel("Angle (rad)")
-plt.grid(True)
-plt.savefig(str(file_directory)+"/response_plot.png", dpi=150)
-
-# Depending on your animator’s API:
-#   - If it accepts SciPy's OdeResult directly, keep as-is.
-#   - If it wants (t, X) arrays, try passing (t_eval, sol.y.T).
-rot_pendulum_animator(sol, name=os.path.join(file_directory, "rotary_pendulum_anim"))
-
-# ---------------------------------------------------------------------
-# 4) Linearization without JAX: finite-difference Jacobian
-# ---------------------------------------------------------------------
-def finite_diff_jacobian(f, x, eps=1e-6):
-    """
-    f: R^n -> R^m, returns vector
-    x: (n,)
-    returns J (m x n)
-    """
-    x = np.asarray(x, dtype=float)
-    f0 = np.asarray(f(x), dtype=float)
-    m = f0.size
-    n = x.size
-    J = np.zeros((m, n), dtype=float)
-    for j in range(n):
-        xp = x.copy()
-        h = eps * max(1.0, abs(x[j]))
-        xp[j] += h
-        fp = np.asarray(f(xp), dtype=float)
-        J[:, j] = (fp - f0) / h
-    return J
 
 # equilibrium and linearization
-x_equil = np.array([0.0, np.pi, 0.0, 0.0, 0.0], dtype=float)  # [θ1, θ2, θ1d, θ2d, u]
-J = finite_diff_jacobian(lambda z: f_wrapped(z), x_equil)     # shape (4,5)
+#Choose your equilibrium point here:
+x_equil = np.array([0.0, np.pi, 0.0, 0.0, 0.0], dtype=float)  # Upward vertical [θ1, θ2, θ1d, θ2d, u]
+#x_equil = np.array([0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)  # Downward vertical  [θ1, θ2, θ1d, θ2d, u]
+
+J = finite_diff_jacobian(lambda z: f_wrapped(z, M_f, N_f), x_equil)     # shape (4,5)
 A_matrix = J[:, :4]
 B_matrix = J[:, 4:5]  # keep as column
 
