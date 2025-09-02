@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
-from Modelling.cart_modelling.cartPlotting import make_animation_with_force
+from cartPlotting import animate_cart
 import os
 file_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -17,11 +17,13 @@ cmnd = 5.0      # desired position
 cmnd_dot = 0.0  # desired velocity
 
 # PD gains
-K_p, K_d = 100, 60
+K_p, K_d = 2, 0.0
 
 # Control input function
 def u(t,x):
-    force = K_p * (cmnd - x[0]) + K_d * (cmnd_dot - x[1])
+    position = x[0]
+    velocity = x[1]
+    force = K_p * (cmnd - position) + K_d * (cmnd_dot - velocity)
     return np.array([force])
 
 # Dynamics function
@@ -59,4 +61,4 @@ plt.grid(True)
 plt.savefig(str(file_directory)+"/force_plot.png", dpi=150)
 
 # --- Generate visualisation of the cart simulation! ---
-make_animation_with_force(x_sol=x, F_sol=F, t_vec=t, file_name=str(file_directory)+"/Cart_simulation.gif")
+animate_cart(x_sol=x, F_sol=F, t_vec=t, file_name=str(file_directory)+"/Cart_simulation.gif")
