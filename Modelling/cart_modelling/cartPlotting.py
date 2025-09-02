@@ -161,7 +161,7 @@ def plot_response(y, ydot, F, t, file_directory, filename="response_plot.png"):
     axs[0].legend(loc="best")
 
     # Second subplot: Control input
-    axs[1].plot(t, F, label="Force u (N)")
+    axs[1].plot(t, F, label="Force u (N)", color="red")
     axs[1].set_xlabel("Time (s)")
     axs[1].set_ylabel("Force (N)")
     axs[1].set_title("Control Input")
