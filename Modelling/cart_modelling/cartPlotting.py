@@ -129,3 +129,47 @@ def animate_cart(x_sol, F_sol, t_vec, file_name):
                         blit=False, repeat=False, interval=1000*tstep_anim)
     ani.save(file_name, writer='pillow', fps=int(1/tstep_anim))
     plt.close(fig)
+
+def plot_response(y, ydot, F, t, file_directory, filename="response_plot.png"):
+    """
+    Plot the cart response (position & velocity) and control input (force).
+    
+    Parameters
+    ----------
+    t : array-like
+        Time vector.
+    y : array-like
+        Cart position (m).
+    ydot : array-like
+        Cart velocity (m/s).
+    F : array-like
+        Control input force (N).
+    file_directory : str
+        Directory where the plot will be saved.
+    filename : str, optional
+        Name of the output file (default: "response_plot.png").
+    """
+    
+    fig, axs = plt.subplots(2, figsize=(8, 6), sharex=True, constrained_layout=True)
+
+    # First subplot: Cart response
+    axs[0].plot(t, y, label="y (m)")
+    axs[0].plot(t, ydot, label="dy/dt (m/s)")
+    axs[0].set_ylabel("Response")
+    axs[0].set_title("Cart Response")
+    axs[0].grid(True)
+    axs[0].legend(loc="best")
+
+    # Second subplot: Control input
+    axs[1].plot(t, F, label="Force u (N)")
+    axs[1].set_xlabel("Time (s)")
+    axs[1].set_ylabel("Force (N)")
+    axs[1].set_title("Control Input")
+    axs[1].grid(True)
+    axs[1].legend(loc="best")
+
+    # Save & show
+    save_path = str(file_directory) + "/" + filename
+    plt.savefig(save_path, dpi=150)
+    #plt.show()
+    print(f"Plot saved to {save_path}")

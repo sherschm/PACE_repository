@@ -2,7 +2,7 @@ import numpy as np
 from numpy import cos, sin
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
-from cartPlotting import animate_cart
+from cartPlotting import animate_cart, plot_response
 import os
 file_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -36,21 +36,8 @@ x = solution.y[0]
 xdot = solution.y[1]
 F = np.array([u(ti,[xi, vi])[0] for xi, vi, ti in zip(x, xdot, t)])
 
-# --- Plot results ---
-plt.figure()
-plt.plot(t, x, label="y (m)")
-plt.plot(t, xdot, label="dy/dt (m/s)")
-plt.xlabel("time (s)")
-plt.legend()
-plt.grid(True)
-plt.savefig(str(file_directory)+"/response_plot.png", dpi=150)
-
-plt.figure()
-plt.plot(t, F)
-plt.xlabel("time (s)")
-plt.ylabel("Force (N)")
-plt.grid(True)
-plt.savefig(str(file_directory)+"/force_plot.png", dpi=150)
+# --- Generate plots of the cart simulation! ---
+plot_response( x, xdot, F, t, file_directory, filename="response_plot.png")
 
 # --- Generate visualisation of the cart simulation! ---
 cart_anim_file = str(file_directory)+"/Cart_simulation.gif"

@@ -3,7 +3,7 @@ from sympy import symbols, Function, diff, Eq, simplify, pprint
 import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
-from cartPlotting import animate_cart
+from cartPlotting import animate_cart, plot_response
 import os
 file_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -103,21 +103,8 @@ y_vals = solution.y[0]    # position
 ydot_vals = solution.y[1] # velocity
 F_vals = np.array([u_func(ti, [yi, vi]) for yi, vi, ti in zip(y_vals, ydot_vals, t_vals)])
 
-# --- Plot results ---
-plt.figure()
-plt.plot(t_vals, y_vals, label="y (m)")
-plt.plot(t_vals, ydot_vals, label="dy/dt (m/s)")
-plt.xlabel("Time (s)")
-plt.legend()
-plt.grid(True)
-plt.savefig(str(file_directory)+"/response_plot.png", dpi=150)
-
-plt.figure()
-plt.plot(t_vals, F_vals)
-plt.xlabel("Time (s)")
-plt.ylabel("Force (N)")
-plt.grid(True)
-plt.savefig(str(file_directory)+"/force_plot.png", dpi=150)
+# --- Generate plots of the cart simulation! ---
+plot_response(y_vals, ydot_vals, F_vals, t_vals, file_directory, filename="response_plot.png")
 
 # --- Animation ---
 cart_anim_file = str(file_directory)+"/Cart_simulation.gif"
