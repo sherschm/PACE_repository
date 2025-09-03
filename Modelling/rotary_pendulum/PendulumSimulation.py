@@ -3,7 +3,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 import os
 from matplotlib import pyplot as plt
-from PendulumPlotting import rot_pendulum_animator
+from PendulumPlotting import rot_pendulum_animator, plot_response
 from DynamicsFuncs import finite_diff_jacobian, rot_pend_dynamics_num, f_wrapped
 
 #Import the dynamic model functions
@@ -34,11 +34,12 @@ x0 = np.array([0.0, np.pi-0.1, 0.0, 0.0], dtype=float)
 
 sol = solve_ivp(xdot, t_span, x0, t_eval=t_eval, method="RK45", atol=1e-9, rtol=1e-7)
 
-#F = np.array([u(ti,[xi, vi])[0] for xi, vi, ti in zip(x, xdot, t)])
+F = np.array([u(tt, xx) for tt, xx in zip(sol.t, sol.y.T)])
 
+plot_response(sol, F, file_directory, filename="response_plot.png")
 
 # --- Plot results ---
-plt.figure()
+'''plt.figure()
 plt.plot(list(sol.t), list(sol.y[1]))
 plt.xlabel("time (s)")
 plt.ylabel("Angle (rad)")
@@ -50,7 +51,7 @@ plt.plot(list(sol.t), list(sol.y[1]))
 plt.xlabel("time (s)")
 plt.ylabel("Angle (rad)")
 plt.grid(True)
-plt.savefig(str(file_directory)+"/response_plot.png", dpi=150)
+plt.savefig(str(file_directory)+"/response_plot.png", dpi=150)'''
 
 # --- Animate results ---
 rot_pendulum_animator(sol, name=os.path.join(file_directory, "rotary_pendulum_anim"))
