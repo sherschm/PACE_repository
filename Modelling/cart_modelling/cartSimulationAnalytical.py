@@ -1,7 +1,8 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import os
-from cartPlotting import animate_cart, plot_response
+#import some useful Python libraries
+import numpy as np #This is a package for doing maths
+import os #Package for working with directories
+from cartPlotting import animate_cart, plot_response #import some plotting functions from another script
+
 file_directory = os.path.dirname(os.path.abspath(__file__))
 
 #System parameters
@@ -19,7 +20,7 @@ y0 = 0.0 #initial position
 yd0 = 0.0 #initial velocity
 
 #Analytical simulation solution
-y= (F/(2*m))*t**2 + yd0*t + y0
+y= (F/(2*m))*t**2 + yd0*t + y0 # "**2" means to the power of 2
 ydot= (F/m)*t + yd0
 
 # --- Plot results ---

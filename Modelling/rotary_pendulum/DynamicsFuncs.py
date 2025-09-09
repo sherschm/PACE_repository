@@ -33,7 +33,7 @@ def dynamics_acc_ctrl_terms(x,M_f,N_f):
 
 def rot_pend_dynamics_num(x, u, M_f, N_f):
     """
-    First-order ODE: xdot = [θ1d, θ2d, θ1dd, θ2dd]
+    First-order ODE: xdot = [θ1d, θ2d, θ1dd, θ2dd] = f(x,u)
     """
     M_a, N_a, B_a = dynamics_acc_ctrl_terms(x, M_f, N_f)
     acc = np.linalg.inv(M_a) @ (B_a.flatten() * u - N_a)  # (2,)

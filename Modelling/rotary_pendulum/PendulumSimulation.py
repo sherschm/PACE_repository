@@ -36,29 +36,15 @@ sol = solve_ivp(xdot, t_span, x0, t_eval=t_eval, method="RK45", atol=1e-9, rtol=
 
 F = np.array([u(tt, xx) for tt, xx in zip(sol.t, sol.y.T)])
 
-plot_response(sol, F, file_directory, filename="response_plot.png")
-
 # --- Plot results ---
-'''plt.figure()
-plt.plot(list(sol.t), list(sol.y[1]))
-plt.xlabel("time (s)")
-plt.ylabel("Angle (rad)")
-plt.grid(True)
-plt.savefig(str(file_directory)+"/response_plot.png", dpi=150)
-
-plt.figure()
-plt.plot(list(sol.t), list(sol.y[1]))
-plt.xlabel("time (s)")
-plt.ylabel("Angle (rad)")
-plt.grid(True)
-plt.savefig(str(file_directory)+"/response_plot.png", dpi=150)'''
+plot_response(sol, F, file_directory, filename="response_plot.png")
 
 # --- Animate results ---
 rot_pendulum_animator(sol, name=os.path.join(file_directory, "rotary_pendulum_anim"))
-# ---------------------------------------------------------------------
-# 4) Linearization model
-# ---------------------------------------------------------------------
 
+# ---------------------------------------------------------------------
+# 4) Linearise the model
+# ---------------------------------------------------------------------
 # equilibrium and linearization
 x_equil = np.array([0.0, np.pi, 0.0, 0.0, 0.0], dtype=float)  # [θ1, θ2, θ1d, θ2d, u]
 J = finite_diff_jacobian(lambda z: f_wrapped(z, M_f, N_f), x_equil)     # shape (4,5)
