@@ -7,14 +7,14 @@
 
 ## Setup Instructions
 
-1. **OPen a command prompt and clone the repository. Then, make a Python virtual environment**
+1. **Copy this in a command prompt to clone the repository**
     ```bash
     git clone https://github.com/sherschm/PACE_repository.git
     cd PACE_repository
     python -m venv venv 
     ```
 
-2. **Activate virtual environment and import the required python packages**
+2. **Activate the Python virtual environment**
 
 In a command prompt run:
 
@@ -22,7 +22,7 @@ In a command prompt run:
 venv\Scripts\activate.bat
 ```
 
-3. **Install dependencies**
+3. **Install the required Python dependencies**
 ```shell
 pip install --upgrade pip
 pip install -r requirements.txt
