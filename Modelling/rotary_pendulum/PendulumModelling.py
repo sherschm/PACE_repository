@@ -89,7 +89,6 @@ N_f = sp.lambdify(x_syms, N.tolist(), modules="numpy")
 # 4) Linearization model
 # ---------------------------------------------------------------------
 
-# equilibrium and linearization
 #Choose your equilibrium point here:
 x_equil = np.array([0.0, np.pi, 0.0, 0.0, 0.0], dtype=float)  # Upward vertical [θ1, θ2, θ1d, θ2d, u]
 #x_equil = np.array([0.0, 0.0, 0.0, 0.0, 0.0], dtype=float)  # Downward vertical  [θ1, θ2, θ1d, θ2d, u]

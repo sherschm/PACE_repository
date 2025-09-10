@@ -128,7 +128,8 @@ def animate_cart(x_sol, F_sol, t_vec, file_name):
     ani = FuncAnimation(fig, update, frames=n_anim, init_func=init,
                         blit=False, repeat=False, interval=1000*tstep_anim)
     ani.save(file_name, writer='pillow', fps=int(1/tstep_anim))
-    plt.close(fig)
+    plt.show()
+    #plt.close(fig)
 
 def plot_response(y, ydot, F, t, file_directory, filename="response_plot.png"):
     """

@@ -54,7 +54,8 @@ def rot_pendulum_animator(x_sol, name="rotary_pendulum_anim"):
 
     anim = FuncAnimation(fig, update, frames=len(tvec_anim), interval=1000/anim_fps)
     anim.save(f"{name}.gif", writer='pillow', fps=anim_fps)
-    plt.close(fig)
+    plt.show()
+    #plt.close(fig)
 
     
 def plot_response(sol, F, file_directory, filename="response_plot.png"): 

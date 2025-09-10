@@ -17,7 +17,11 @@ file_directory = os.path.dirname(os.path.abspath(__file__))
 # Control input function
 def u(t,x):
     equil = np.array([0.0, np.pi, 0.0, 0.0], dtype=float)  # [θ1, θ2, θ1d, θ2d]
-    acceleration = K @ (equil - x)  # u = -K(x - x_equil)
+
+    #acceleration = K @ (equil - x)  # u = -K(x - x_equil)
+
+    acceleration = 0.0
+
     return np.array([acceleration]).flatten()
 
 # Dynamics function for ODE solver
@@ -28,7 +32,7 @@ def xdot(t, x):
 # ---------------------------------------------------------------------
 # 3) Simulate with SciPy
 # ---------------------------------------------------------------------
-t_span = (0.0, 10.0)
+t_span = (0.0, 5.0)
 t_eval = np.linspace(t_span[0], t_span[1], 400)
 x0 = np.array([0.0, np.pi-0.1, 0.0, 0.0], dtype=float)
 
