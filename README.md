@@ -1,4 +1,10 @@
-# PACE Modelling & control code
+# PACE modelling & control Python code
+
+This repository contains some example scripts detailing how to model and simulate simple systems in Python.
+
+| Pendulum              | Cart               |
+| ---------------------- | ---------------------- |
+| ![PENDULUM](Modelling/rotary_pendulum/rotary_pendulum_anim.gif) | ![CART](Modelling/cart_modelling/Cart_simulation.gif) |
 
 ## Requirements
 - Windows
