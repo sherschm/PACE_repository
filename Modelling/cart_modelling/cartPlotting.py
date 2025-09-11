@@ -174,3 +174,125 @@ def plot_response(y, ydot, F, t, file_directory, filename="response_plot.png"):
     plt.savefig(save_path, dpi=150)
     #plt.show()
     print(f"Plot saved to {save_path}")
+
+def animate_cartpole(x_sol, F_sol, t_vec, file_name, L=1.0):
+    """
+    Animate a cart-pole system.
+    
+    x_sol: (n_time, 4) -> [y, theta, y_dot, theta_dot]
+    F_sol: (n_time,)   -> applied force on cart
+    t_vec: (n_time,)   -> time vector
+    file_name: str     -> output GIF filename
+    L: float           -> pendulum length (default 1.0)
+    """
+    tstep_anim = 0.05
+    t_anim = np.arange(tstep_anim, np.max(t_vec) + tstep_anim, tstep_anim)
+
+    # interpolate solutions to animation timeline
+    y_anim     = lin_interp(x_sol[:, [0]], t_vec, t_anim).flatten()
+    theta_anim = lin_interp(x_sol[:, [1]], t_vec, t_anim).flatten()
+    F_anim     = np.interp(t_anim, t_vec, F_sol)
+
+    n_anim = len(t_anim)
+
+    fig, ax = plt.subplots()
+    ax.set_aspect('equal')
+    ax.axis('off')
+
+    def init():
+        ax.clear()
+        ax.set_xlim(np.min(y_anim) - 2, np.max(y_anim) + 2)
+        ax.set_ylim(-L - 0.5, L + 1.5)
+        ax.set_aspect('equal')
+        return []
+
+    def update(i):
+        ax.clear()
+
+        # Axis limits
+        ax.set_xlim(np.min(y_anim) - 2, np.max(y_anim) + 2)
+        ax.set_ylim(-L - 0.5, L + 1.5)
+        ax.set_aspect('equal')
+
+        # Draw floor
+        ax.axhline(0, color='k', linewidth=1)
+
+        # Cart geometry
+        cart_x = y_anim[i]
+        cart_y = 0.25   # height of cart bottom above ground
+        plot_trolley(ax, cart_x)  # uses your existing function
+
+        # Pendulum coordinates
+        theta = theta_anim[i]
+        cart_center = (cart_x + w_trol/2, cart_y + h_trol/2)  # center of cart
+        px = cart_center[0] + L * np.sin(theta)
+        py = cart_center[1] - L * np.cos(theta)
+
+        # Draw pendulum rod and bob
+        ax.plot([cart_center[0], px], [cart_center[1], py], 'k-', lw=2)
+        ax.add_patch(plt.Circle((px, py), 0.1, fc='blue'))
+
+        # Force arrow
+        if abs(F_anim[i]) > 1e-3:
+            arrow_len = F_anim[i] / 10.0
+            ax.add_patch(FancyArrow(cart_x, cart_y + h_trol/2,
+                                    arrow_len, 0, width=0.05,
+                                    head_width=0.15, head_length=0.15,
+                                    color='red'))
+
+        # Label
+        ax.set_xlabel("Position (m)")
+
+        return ax.patches
+
+    ani = FuncAnimation(fig, update, frames=n_anim, init_func=init,
+                        blit=False, repeat=False, interval=1000*tstep_anim)
+    ani.save(file_name, writer='pillow', fps=int(1/tstep_anim))
+    plt.show()
+
+
+def plot_response_cartpole(solution, F, t, file_directory, filename="response_plot.png"):
+    """
+    Plot the cart response (position & velocity) and control input (force).
+    
+    Parameters
+    ----------
+    t : array-like
+        Time vector.
+    y : array-like
+        Cart position (m).
+    ydot : array-like
+        Cart velocity (m/s).
+    F : array-like
+        Control input force (N).
+    file_directory : str
+        Directory where the plot will be saved.
+    filename : str, optional
+        Name of the output file (default: "response_plot.png").
+    """
+    
+    fig, axs = plt.subplots(2, figsize=(8, 6), sharex=True, constrained_layout=True)
+
+    # First subplot: Cart response
+    axs[0].plot(t, solution.y[0], label="y (m)")
+    axs[0].plot(t, solution.y[1], label="theta (rad)")
+    axs[0].plot(t, solution.y[2], label="ydot (m/2)")
+    axs[0].plot(t, solution.y[3], label="theta_dot (rad/s)")
+    axs[0].set_ylabel("Response")
+    axs[0].set_title("Cart Response")
+    axs[0].grid(True)
+    axs[0].legend(loc="best")
+
+    # Second subplot: Control input
+    axs[1].plot(t, F, label="Force u (N)", color="red")
+    axs[1].set_xlabel("Time (s)")
+    axs[1].set_ylabel("Force (N)")
+    axs[1].set_title("Control Input")
+    axs[1].grid(True)
+    axs[1].legend(loc="best")
+
+    # Save & show
+    save_path = str(file_directory) + "/" + filename
+    plt.savefig(save_path, dpi=150)
+    #plt.show()
+    print(f"Plot saved to {save_path}")
