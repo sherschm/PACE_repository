@@ -9,7 +9,7 @@ file_directory = os.path.dirname(os.path.abspath(__file__))
 
 # --- System Parameters ---
 m = 10  # kg (cart mass)
-c = 0.0  # Ns/m (viscous friction coefficient)
+c = 1.0  # Ns/m (viscous friction coefficient)
 k = 10 #N/m
 
 M = np.array([[m, 0, 0],
@@ -20,6 +20,10 @@ P = np.array([[k, -k,    0],
               [-k, k+k, -k],
               [0, -k,    k]])
 
+Damp = np.array([[c, -c,    0],
+              [-c, c+c, -c],
+              [0, -c,    c]])
+
 b = np.array([[1],
               [0],
               [0]])
@@ -27,7 +31,7 @@ b = np.array([[1],
 # --- State-space matrices ---
 A = np.block([
     [np.zeros((3,3)), np.identity(3)],
-    [inv(M) @ -P, np.zeros((3,3))]
+    [inv(M) @ -P, -Damp]
 ])
 
 B = np.block([
@@ -49,7 +53,7 @@ print("Transfer function:",sys_tf)
 print("Poles:", ct.poles(sys_ss))
 print("Zeros:", ct.zeros(sys_ss))
 
-ct.root_locus(sys_tf)
+ct.root_locus(sys_ss, gains=np.linspace(0, 200, 500))
 
 ct.bode_plot(sys_tf, dB=True, Hz=False, omega_limits=(1e-1, 1e2), omega_num=400)
 
