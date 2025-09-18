@@ -70,6 +70,12 @@ pprint(eq_theta)
 # rearrange equations to find Mass matrix M and other terms N: M(q)*qdd = N(q,qd)
 Mass_Matrix, N_vec = sp.linear_eq_to_matrix([eq_y, eq_theta], [y_ddot, theta_ddot])
 
+print("\n Mass Matrix:")
+pprint(Mass_Matrix)
+
+print("\n Other terms N:")
+pprint(N_vec)
+
 q = [y, theta]
 qd= [y_dot, theta_dot]
 qdd = list(simplify(Mass_Matrix.inv())*N_vec)

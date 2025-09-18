@@ -26,7 +26,8 @@ print("\n")
 # Step 2: Define energy terms
 # -----------------------------
 print("Step 2: Defining energy terms...")
-T = (1/2) * m * diff(y, t)**2  # kinetic energy
+ydot = diff(y, t)
+T = (1/2) * m * ydot**2  # kinetic energy
 print("Kinetic Energy T =")
 pprint(T)
 print("\n")
@@ -102,10 +103,11 @@ t_vals = solution.t
 y_vals = solution.y[0]    # position
 ydot_vals = solution.y[1] # velocity
 F_vals = np.array([u_func(ti, [yi, vi]) for yi, vi, ti in zip(y_vals, ydot_vals, t_vals)])
+#F_vals = np.array([u_func(ti, xi)[0] for ti, xi in zip(t_vals, solution.y.T)])
 
 # --- Generate plots of the cart simulation! ---
 plot_response(y_vals, ydot_vals, F_vals, t_vals, file_directory, filename="response_plot.png")
 
 # --- Animation ---
 cart_anim_file = str(file_directory)+"/Cart_simulation.gif"
-animate_cart(x_sol=y_vals, F_sol=F_vals, t_vec=t_vals, file_name=cart_anim_file)
+animate_cart(x_sol=np.array([y_vals]), F_sol=F_vals, t_vec=t_vals, file_name=cart_anim_file)

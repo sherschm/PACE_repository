@@ -71,7 +71,6 @@ C_vec1 = simplify(coriolis_grav1 - G1)
 C_vec2 = simplify(coriolis_grav2 - G2)
 C_vec = Matrix([C_vec1, C_vec2])
 
-
 print('Mass matrix M:')
 pprint(M)
 print('\nGravity vector G:')

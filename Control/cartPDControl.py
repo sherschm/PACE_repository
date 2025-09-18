@@ -51,7 +51,7 @@ F = np.array([u(ti,[yi, ydoti])[0] for yi, ydoti, ti in zip(y, ydot, t)])
 plot_response( y, ydot, F, t, file_directory, filename="response_plot.png")
 
 # --- Generate visualisation of the cart simulation! ---
-animate_cart(x_sol=y, F_sol=F, t_vec=t, file_name=str(file_directory)+"/Cart_simulation.gif")
+animate_cart(x_sol=np.array([y]), F_sol=F, t_vec=t, file_name=str(file_directory)+"/Cart_simulation.gif")
 
 def control_energy(force, velocity, time):
     """
