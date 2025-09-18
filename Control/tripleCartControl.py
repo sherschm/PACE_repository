@@ -10,7 +10,7 @@ file_directory = os.path.dirname(os.path.abspath(__file__))
 # --- System Parameters ---
 m = 10  # kg (cart mass)
 c = 10.0  # Ns/m (viscous friction coefficient)
-k = 1 #N/m
+k = 5 #N/m
 
 M = np.array([[m, 0, 0],
               [0, m, 0],
@@ -20,10 +20,6 @@ P = np.array([[k, -k,    0],
               [-k, k+k, -k],
               [0, -k,    k]])
 
-D = np.array([[c, -c,    0],
-              [-c, c+c, -c],
-              [0, -c,    c]])
-
 b = np.array([[1],
               [0],
               [0]])
@@ -31,7 +27,7 @@ b = np.array([[1],
 # --- State-space matrices ---
 A = np.block([
     [np.zeros((3,3)), np.identity(3)],
-    [inv(M) @ -P, -D]
+    [inv(M) @ -P, np.zeros((3,3))]
 ])
 
 B = np.block([
@@ -42,9 +38,9 @@ B = np.block([
 # --- Control parameters ---
 y_d = 2.0     # desired position for cart 3
 ydot_d = 0.0  # desired velocity
-k_p, k_d = 10.0, 0.0  # PD gains
+k_p, k_d = 2.0, 2.0  # PD gains
 
-# Control input function (force applied to cart 1)
+# Control input function (force applied to cart 1). Modify me!
 def u(t, x):
     y = x[2]       # cart 3 position
     ydot = x[5]    # cart 3 velocity
@@ -57,8 +53,8 @@ def xdot(t, x):
     return dx.flatten()
     
 # --- Simulation setup ---
-t_span = (0, 100)  # time range
-x0 = np.ones(6)  # initial state: [x1, x2, x3, x1dot, x2dot, x3dot]
+t_span = (0, 15)  # time range
+x0 = np.zeros(6)  # initial state: [x1, x2, x3, x1dot, x2dot, x3dot]
 
 solution = solve_ivp(xdot, t_span, x0, t_eval=np.linspace(*t_span, 400))
 

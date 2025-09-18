@@ -49,10 +49,14 @@ print("Transfer function:",sys_tf)
 print("Poles:", ct.poles(sys_ss))
 print("Zeros:", ct.zeros(sys_ss))
 
+ct.root_locus(sys_tf)
+
 ct.bode_plot(sys_tf, dB=True, Hz=False, omega_limits=(1e-1, 1e2), omega_num=400)
 
 # --- Control parameters ---
 y_d = 2.0     # desired position for cart 1
+x_d = np.array([y_d, y_d, y_d, 0.0, 0.0, 0.0])
+
 ydot_d = 0.0  # desired velocity
 k_p, k_d = 10.0, 0.0  # PD gains
 
@@ -68,7 +72,7 @@ K = ct.place(A, B, desired_poles)
 
 def u(t, x):
     # full-state feedback, returns 1D array
-    force = -K @ (x)  
+    force = K @ ( x_d -x)  
     return np.array([force])[0]
 
 #def u(t, x):
@@ -84,7 +88,7 @@ def xdot(t, x):
     
 # --- Simulation setup ---
 t_span = (0, 10)  # time range
-x0 = np.ones(6)  # initial state: [x1, x2, x3, x1dot, x2dot, x3dot]
+x0 = np.zeros(6)  # initial state: [x1, x2, x3, x1dot, x2dot, x3dot]
 
 solution = solve_ivp(xdot, t_span, x0, t_eval=np.linspace(*t_span, 400))
 
