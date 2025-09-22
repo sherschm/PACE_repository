@@ -40,76 +40,28 @@ B = np.block([
     [inv(M) @ b]
 ])
 
+A_real = A = np.block([
+    [np.zeros((3,3)), np.identity(3)],
+    [inv(M) @ -P, np.zeros((3,3))]
+])
+
 C = np.array([[0., 0., 1., 0., 0., 0.]])  # we measure cart 3 position
 
 D = np.array([[0.0]])
 
-sys_ss = ct.ss(A, B, C, D)
-
-# --- Convert to transfer function ---
-sys_tf = ct.ss2tf(sys_ss)
-print("Transfer function:",sys_tf)
-
-G = sys_tf[0,0]
-
-# extract numerator and denominator arrays
-num, den = G.num[0][0], G.den[0][0]
-
-# normalize and truncate small terms
-maxcoeff = max(np.max(np.abs(num)), np.max(np.abs(den)))
-tol = 1e-12 * maxcoeff  # tolerance
-num[np.abs(num) < tol] = 0
-den[np.abs(den) < tol] = 0
-
-# re-create clean TF
-G = ct.TransferFunction(num, den)
-
-print("Transfer function:",G)
-
-# --- Poles, zeros ---
-print("Poles:", ct.poles(G))
-print("Zeros:", ct.zeros(G))
-
-K=1.0#
-T = ct.feedback(K*G, 1)   # unity feedback
-
-ct.root_locus(T, gains=np.linspace(0, 1000, 500))
-
-
-ct.bode_plot(sys_tf, dB=True, Hz=False, omega_limits=(1e-1, 1e2), omega_num=400)
-
+# --- Control parameters ---
 Q=np.diag([1,1,1,0.1,0.1,0.1]) 
 R=0.0001
-
 K, S, E = ct.lqr(A, B, Q, R)
-
-# --- Control parameters ---
-
-
-ydot_d = 0.0  # desired velocity
-k_p, k_d = 100, 0.0  # PD gains
-
-desired_poles =[-0.1, -0.2, -0.8+1.66j, -0.8-1.66j, -1+1.66j, -1-1.66j]
-K = ct.place(A, B, desired_poles)
 
 def u(t, x):
     # LQR full-state feedback, returns 1D array
-
-    #y_d = 2.0     # desired position for cart 1
-    #x_d = np.array([y_d, y_d, y_d, 0.0, 0.0, 0.0])
-    #force = K @ ( x_d -x)  #specified desired position
     force = -K @ (x)  # regulation (get to zero)
     return force
 
-#def u(t, x):
-#    y = x[0]       # cart 1 position
-#    ydot = x[3]    # cart 1 velocity
-#    force = 0.0
-#    return np.array([force])
-
 # Dynamics function
 def xdot(t, x):
-    dx = A @ x + B @ u(t, x)
+    dx = A_real @ x + B @ u(t, x)
     return dx.flatten()
     
 # --- Simulation setup ---

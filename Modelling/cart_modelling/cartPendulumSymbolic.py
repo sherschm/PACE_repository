@@ -87,9 +87,24 @@ state_dot = sp.Matrix(qd+qdd)
 # Convert symbolic model to numerical function
 state_dot_func = sp.lambdify((t, state, u, m, M, L, g), list(state_dot), "numpy")
 
+# PD gains
+k_p, k_d = 5, 5.0
+
+y_d = 2.0
+
+ydot_d = 0.0
+
+# Control input function
+def u_func(t,x):
+    y = x[0]
+    ydot = x[1]
+    force = k_p * (y_d - y) + k_d * (ydot_d - ydot) # PD control law
+    return force
+
 # Control input (scalar force)
-def u_func(t, state):
-    return 0.0  # constant input
+#def u_func(t, state):
+
+ #   return 0.0  # constant input
 
 # System dynamics for solver
 def system(t, x):
@@ -103,7 +118,7 @@ M_val = 20.0
 L_val = 2.0
 g = 9.81
 
-x0 = np.array([0.0, 1.0, 0.0, 0.0])  # initial state [q, qd]
+x0 = np.array([0.0, 0.0, 0.0, 0.0])  # initial state [q, qd]
 t_span = (0, 10)
 t_eval = np.linspace(*t_span, 200)
 

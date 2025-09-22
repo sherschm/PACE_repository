@@ -20,7 +20,9 @@ def u(t,x):
 
     #acceleration = K @ (equil - x)  # u = -K(x - x_equil)
 
-    acceleration = 0.0
+    #acceleration = 0.0
+
+    acceleration = 100 * (equil[1] - x[1])
 
     return np.array([acceleration]).flatten()
 

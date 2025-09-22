@@ -23,7 +23,7 @@ y_d = 2.0      # desired position (y_d)
 ydot_d = 0.0  # desired velocity
 
 # PID gains
-k_p, k_i, k_d = 25.0, 0.0, 10.0
+k_p, k_i, k_d = 25.0, 5.0, 10.0
 
 # PID control law
 def u(t,x_e):

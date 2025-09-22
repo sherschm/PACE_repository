@@ -7,7 +7,9 @@ file_directory = os.path.dirname(os.path.abspath(__file__))
 
 # --- System Parameters ---
 m = 10  # kg (cart mass)
-c = 0.0  # Ns/m (viscous friction coefficient)
+c = 10.0  # Ns/m (viscous friction coefficient)
+
+d = 20.0
 
 # State-space representation of the cart system dynamics
 A = np.array([[0, 1],
@@ -16,22 +18,35 @@ B = np.array([[0],
               [1/m]])
 
 # Desired motion
-y_d = 2.0      # desired position (y_d)
-ydot_d = 0.0  # desired velocity
+#y_d = 2.0      # desired position (y_d)
+
+def y_d(t):
+    return 2.0
+
+def ydot_d(t):
+    return 0.0
+
+#ydot_d = 0.0  # desired velocity
 
 # PD gains
 k_p, k_d = 50, 50.0
 
+K = np.array([k_p, k_d])
 # Control input function
 def u(t,x):
     y = x[0]
     ydot = x[1]
-    force = k_p * (y_d - y) + k_d * (ydot_d - ydot) # PD control law
-    return np.array([force])
+
+    e = y_d(t) - y
+    ed = ydot_d(t) - ydot
+
+    e_vec = np.array([[e],[ed]])
+    force = K @ e_vec
+    return np.array([force[0]])
 
 # Dynamics function
 def xdot(t, x):
-    dx = A @ x + B @ u(t,x)
+    dx = A @ x + B @ u(t,x) - d*np.array([0.0, 1/m])
     return dx.flatten()
 
 # Initial conditions & simulation parameters
