@@ -72,8 +72,8 @@ def plot_response(sol, F, file_directory, filename="response_plot.png"):
     axs[0].grid(True)
     axs[0].legend(loc="best")
 
-    axs[1].plot(list(sol.t), list(sol.y[0]), label='dθ1/dt')
-    axs[1].plot(list(sol.t), list(sol.y[1]), label='dθ2/dt')
+    axs[1].plot(list(sol.t), list(sol.y[2]), label='dθ1/dt')
+    axs[1].plot(list(sol.t), list(sol.y[3]), label='dθ2/dt')
     axs[1].set_ylabel("Angular velocity (rad/s)")
     axs[1].set_title("Pendulum Velocity Response")
     axs[1].grid(True)
