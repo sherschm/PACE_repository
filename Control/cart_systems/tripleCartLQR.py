@@ -7,6 +7,7 @@ from cartPlotting import animate_cart, plot_response
 import control as ct  
 import os
 file_directory = os.path.dirname(os.path.abspath(__file__))
+plot_dir = str(file_directory)+"/plots/"
 
 # --- System Parameters ---
 m = 10.0  # kg (cart mass)
@@ -40,11 +41,6 @@ B = np.block([
     [inv(M) @ b]
 ])
 
-A_real = A = np.block([
-    [np.zeros((3,3)), np.identity(3)],
-    [inv(M) @ -P, np.zeros((3,3))]
-])
-
 C = np.array([[0., 0., 1., 0., 0., 0.]])  # we measure cart 3 position
 
 D = np.array([[0.0]])
@@ -61,7 +57,7 @@ def u(t, x):
 
 # Dynamics function
 def xdot(t, x):
-    dx = A_real @ x + B @ u(t, x)
+    dx = A @ x + B @ u(t, x)
     return dx.flatten()
     
 # --- Simulation setup ---
@@ -79,29 +75,13 @@ ydot = solution.y[3:6, :] # velocities of the 3 carts
 F = np.array([u(ti, xi)[0] for ti, xi in zip(t, solution.y.T)])
 
 # --- Generate plots of the cart simulation - CART 3 ONLY! ---
-plot_response( solution.y[2, :], solution.y[5, :], F, t, file_directory, filename="response_plot_Cart3.png")
+plot_response( solution.y[2, :], solution.y[5, :], F, t, plot_dir, filename="response_plot_Cart3.png")
 
 # --- Generate visualisation of the cart simulation! ---
-animate_cart(x_sol=y, F_sol=F, t_vec=t, file_name=str(file_directory)+"/Cart_simulation.gif")
+animate_cart(x_sol=y, F_sol=F, t_vec=t, file_name=str(plot_dir)+"/Cart_simulation.gif")
 
 def control_energy(force, velocity, time):
-    """
-    Compute the total energy used by the controller throughout the simulation.
-    
-    Parameters
-    ----------
-    force : array_like
-        Force applied by the controller at each timestep (N).
-    velocity : array_like
-        Cart velocity at each timestep (m/s).
-    time : array_like
-        Time vector corresponding to force/velocity samples (s).
-        
-    Returns
-    -------
-    energy : float
-        Total energy used (Joules).
-    """
+    #Compute the total energy used by the controller throughout the simulation.
     power = np.abs(force * velocity)   # instantaneous power (W = J/s)
     energy = np.trapezoid(power, time)  # integrate power over time
     return energy

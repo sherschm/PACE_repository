@@ -24,7 +24,7 @@ D = np.zeros((4, 1))  # No direct feedthrough
 sys_c = ct.ss(A, B, C, D)
 
 Q=np.diag([0.1,0.01,0.01,0.01]) 
-R=0.001
+R=0.01
 
 K, S, E = ct.lqr(A, B, Q, R)
 

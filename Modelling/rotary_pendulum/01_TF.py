@@ -1,5 +1,6 @@
 import numpy as np
 import control as ct
+from control.matlab import margin
 import os
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
@@ -32,19 +33,38 @@ G = sys_tf[1,0]
 print("Input-to-arm TF:",G)
 print("Poles:", ct.poles(G))
 
-alpha = 100  # fixed zero location
+alpha = 10  # fixed zero location
 Kd = 1      # gain to sweep
 s = ct.tf('s')
 C = Kd * (s + alpha)  # initial value
 L=C*G
 
-K=1.0
-T = ct.feedback(G, 1)   # unity feedback
+ct.root_locus(G, gains=np.linspace(0, 1000, 500))
+plt.show()
 
 ct.root_locus(L, gains=np.linspace(0, 1000, 500))
+plt.show()
+
+#decide on actual values of k_d, from root_locus
+C = 1 * (s + alpha)  # initial value
+L=C*G
+
+# Compute margins
+margin(L)
+plt.show()
+gm, pm, wg, wp = ct.margin(L)
+print("Gain margin:", gm, "at frequency", wg)
+print("Phase margin:", pm, "at frequency", wp)
+
+
+ct.nyquist_plot(L)
+plt.show()
+
+ct.bode_plot(L, dB=True, Hz=False, omega_limits=(1e-2, 1e2), omega_num=400)
+plt.show()
 
 # Set your sampling time (e.g., 0.01 seconds)
-Ts = 0.01
+Ts = 0.002
 
 # Convert to discrete time
 sys_d = ct.c2d(sys_c, Ts, method='zoh')  # Zero-order hold
